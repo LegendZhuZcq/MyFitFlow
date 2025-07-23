@@ -1,7 +1,8 @@
+
 "use client";
 
-import { useState, useMemo } from 'react';
-import { format, addDays, startOfWeek, subDays, isToday, parseISO } from 'date-fns';
+import { useState, useMemo, useEffect } from 'react';
+import { format, addDays, startOfWeek, subDays } from 'date-fns';
 import type { Exercise, Workout } from '@/types';
 import Header from '@/components/header';
 import CalendarView from '@/components/calendar-view';
@@ -21,9 +22,9 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: mondayKey,
       completed: true,
       exercises: [
-        { id: crypto.randomUUID(), name: 'Bench Press', sets: 4, reps: '8-10', weight: '80kg', youtubeLink: 'https://www.youtube.com/watch?v=SCVCLChgT5A', completedSets: 4 },
-        { id: crypto.randomUUID(), name: 'Overhead Press', sets: 3, reps: '10-12', weight: '40kg', youtubeLink: 'https://www.youtube.com', completedSets: 1 },
-        { id: crypto.randomUUID(), name: 'Tricep Pushdowns', sets: 3, reps: '12-15', weight: '25kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '1', name: 'Bench Press', sets: 4, reps: '8-10', weight: '80kg', youtubeLink: 'https://www.youtube.com/watch?v=SCVCLChgT5A', completedSets: 4 },
+        { id: '2', name: 'Overhead Press', sets: 3, reps: '10-12', weight: '40kg', youtubeLink: 'https://www.youtube.com', completedSets: 1 },
+        { id: '3', name: 'Tricep Pushdowns', sets: 3, reps: '12-15', weight: '25kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
       ],
     },
     [wednesdayKey]: {
@@ -31,9 +32,9 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: wednesdayKey,
       completed: false,
       exercises: [
-        { id: crypto.randomUUID(), name: 'Pull Ups', sets: 4, reps: 'AMRAP', weight: 'Bodyweight', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: crypto.randomUUID(), name: 'Bent Over Rows', sets: 3, reps: '10', weight: '60kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: crypto.randomUUID(), name: 'Bicep Curls', sets: 3, reps: '12-15', weight: '15kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '4', name: 'Pull Ups', sets: 4, reps: 'AMRAP', weight: 'Bodyweight', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '5', name: 'Bent Over Rows', sets: 3, reps: '10', weight: '60kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '6', name: 'Bicep Curls', sets: 3, reps: '12-15', weight: '15kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
       ],
     },
     [fridayKey]: {
@@ -41,16 +42,36 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: fridayKey,
       completed: false,
       exercises: [
-        { id: crypto.randomUUID(), name: 'Squats', sets: 4, reps: '8-10', weight: '100kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: crypto.randomUUID(), name: 'Romanian Deadlifts', sets: 3, reps: '10-12', weight: '80kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: crypto.randomUUID(), name: 'Leg Press', sets: 3, reps: '12-15', weight: '150kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '7', name: 'Squats', sets: 4, reps: '8-10', weight: '100kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '8', name: 'Romanian Deadlifts', sets: 3, reps: '10-12', weight: '80kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '9', name: 'Leg Press', sets: 3, reps: '12-15', weight: '150kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
       ],
     }
   };
 };
 
 export default function Home() {
-  const [workouts, setWorkouts] = useState<Record<string, Workout>>(getInitialWorkouts);
+  const [workouts, setWorkouts] = useState<Record<string, Workout>>({});
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // We are generating randomUUIDs for initial data, which causes a hydration mismatch
+    // if we do it on both server and client.
+    // By setting the workouts in a useEffect, we ensure this only runs on the client.
+    const initialWorkouts = getInitialWorkouts();
+    const clientSideWorkouts: Record<string, Workout> = {};
+    for (const dateKey in initialWorkouts) {
+        const workout = initialWorkouts[dateKey];
+        clientSideWorkouts[dateKey] = {
+            ...workout,
+            exercises: workout.exercises.map(ex => ({...ex, id: crypto.randomUUID()}))
+        };
+    }
+    setWorkouts(clientSideWorkouts);
+    setIsClient(true);
+  }, []);
+
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
 
@@ -167,6 +188,11 @@ export default function Home() {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     return workouts[dateKey];
   }, [selectedDate, workouts]);
+
+  if (!isClient) {
+    // You can return a loader here or null
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground font-body">

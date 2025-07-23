@@ -23,20 +23,20 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       completed: true,
       exercises: [
         { id: '1', name: 'Bench Press', youtubeLink: 'https://www.youtube.com/watch?v=SCVCLChgT5A', sets: [
-          {id: 's1', reps: '8', weight: '80kg', completed: true},
-          {id: 's2', reps: '8', weight: '80kg', completed: true},
-          {id: 's3', reps: '10', weight: '75kg', completed: true},
-          {id: 's4', reps: '10', weight: '70kg', completed: false},
+          {id: 's1', reps: '8', measurement: '80kg', completed: true},
+          {id: 's2', reps: '8', measurement: '80kg', completed: true},
+          {id: 's3', reps: '10', measurement: '75kg', completed: true},
+          {id: 's4', reps: '10', measurement: '70kg', completed: false},
         ]},
         { id: '2', name: 'Overhead Press', youtubeLink: 'https://www.youtube.com', sets: [
-          {id: 's5', reps: '10', weight: '40kg', completed: true},
-          {id: 's6', reps: '12', weight: '40kg', completed: false},
-          {id: 's7', reps: '12', weight: '35kg', completed: false},
+          {id: 's5', reps: '10', measurement: '40kg', completed: true},
+          {id: 's6', reps: '12', measurement: '40kg', completed: false},
+          {id: 's7', reps: '12', measurement: '35kg', completed: false},
         ]},
         { id: '3', name: 'Tricep Pushdowns', youtubeLink: 'https://www.youtube.com', sets: [
-          {id: 's8', reps: '15', weight: '25kg', completed: false},
-          {id: 's9', reps: '15', weight: '25kg', completed: false},
-          {id: 's10', reps: '15', weight: '20kg', completed: false},
+          {id: 's8', reps: '15', measurement: '25kg', completed: false},
+          {id: 's9', reps: '15', measurement: '25kg', completed: false},
+          {id: 's10', reps: '15', measurement: '20kg', completed: false},
         ]},
       ],
     },
@@ -46,20 +46,20 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       completed: false,
       exercises: [
         { id: '4', name: 'Pull Ups', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's11', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
-            {id: 's12', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
-            {id: 's13', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
-            {id: 's14', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
+            {id: 's11', reps: 'AMRAP', measurement: 'Bodyweight', completed: false},
+            {id: 's12', reps: 'AMRAP', measurement: 'Bodyweight', completed: false},
+            {id: 's13', reps: 'AMRAP', measurement: 'Bodyweight', completed: false},
+            {id: 's14', reps: 'AMRAP', measurement: 'Bodyweight', completed: false},
         ]},
         { id: '5', name: 'Bent Over Rows', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's15', reps: '10', weight: '60kg', completed: false},
-            {id: 's16', reps: '10', weight: '60kg', completed: false},
-            {id: 's17', reps: '10', weight: '60kg', completed: false},
+            {id: 's15', reps: '10', measurement: '60kg', completed: false},
+            {id: 's16', reps: '10', measurement: '60kg', completed: false},
+            {id: 's17', reps: '10', measurement: '60kg', completed: false},
         ]},
         { id: '6', name: 'Bicep Curls', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's18', reps: '12', weight: '15kg', completed: false},
-            {id: 's19', reps: '15', weight: '15kg', completed: false},
-            {id: 's20', reps: '15', weight: '12.5kg', completed: false},
+            {id: 's18', reps: '12', measurement: '15kg', completed: false},
+            {id: 's19', reps: '15', measurement: '15kg', completed: false},
+            {id: 's20', reps: '15', measurement: '12.5kg', completed: false},
         ]},
       ],
     },
@@ -69,20 +69,20 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       completed: false,
       exercises: [
         { id: '7', name: 'Squats', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's21', reps: '8', weight: '100kg', completed: false},
-            {id: 's22', reps: '8', weight: '100kg', completed: false},
-            {id: 's23', reps: '10', weight: '90kg', completed: false},
-            {id: 's24', reps: '10', weight: '90kg', completed: false},
+            {id: 's21', reps: '8', measurement: '100kg', completed: false},
+            {id: 's22', reps: '8', measurement: '100kg', completed: false},
+            {id: 's23', reps: '10', measurement: '90kg', completed: false},
+            {id: 's24', reps: '10', measurement: '90kg', completed: false},
         ]},
         { id: '8', name: 'Romanian Deadlifts', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's25', reps: '12', weight: '80kg', completed: false},
-            {id: 's26', reps: '12', weight: '80kg', completed: false},
-            {id: 's27', reps: '12', weight: '80kg', completed: false},
+            {id: 's25', reps: '12', measurement: '80kg', completed: false},
+            {id: 's26', reps: '12', measurement: '80kg', completed: false},
+            {id: 's27', reps: '12', measurement: '80kg', completed: false},
         ]},
         { id: '9', name: 'Leg Press', youtubeLink: 'https://www.youtube.com', sets: [
-            {id: 's28', reps: '12', weight: '150kg', completed: false},
-            {id: 's29', reps: '15', weight: '140kg', completed: false},
-            {id: 's30', reps: '15', weight: '130kg', completed: false},
+            {id: 's28', reps: '12', measurement: '150kg', completed: false},
+            {id: 's29', reps: '15', measurement: '140kg', completed: false},
+            {id: 's30', reps: '15', measurement: '130kg', completed: false},
         ]},
       ],
     }
@@ -91,6 +91,7 @@ const getInitialWorkouts = (): Record<string, Workout> => {
 
 const clientSideHydrate = (initialWorkouts: Record<string, Workout>) => {
     const clientSideWorkouts: Record<string, Workout> = {};
+    if (typeof window === 'undefined') return initialWorkouts;
     for (const dateKey in initialWorkouts) {
         const workout = initialWorkouts[dateKey];
         clientSideWorkouts[dateKey] = {

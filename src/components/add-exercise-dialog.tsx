@@ -30,7 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const setSchema = z.object({
   reps: z.string().min(1, { message: "Reps are required." }),
-  weight: z.string().min(1, { message: "Weight is required." }),
+  measurement: z.string().min(1, { message: "Value is required." }),
 });
 
 const formSchema = z.object({
@@ -53,7 +53,7 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
     defaultValues: {
       name: "",
       youtubeLink: "",
-      sets: [{ reps: "8-12", weight: "" }],
+      sets: [{ reps: "8-12", measurement: "" }],
     },
   });
 
@@ -138,12 +138,12 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
                     />
                     <FormField
                       control={form.control}
-                      name={`sets.${index}.weight`}
+                      name={`sets.${index}.measurement`}
                       render={({ field }) => (
                         <FormItem className="flex-1">
-                          {index === 0 && <FormLabel>Weight</FormLabel>}
+                          {index === 0 && <FormLabel>Value (kg or secs)</FormLabel>}
                           <FormControl>
-                            <Input placeholder="50kg" {...field} />
+                            <Input placeholder="50kg or 30s" {...field} />
                           </FormControl>
                            <FormMessage />
                         </FormItem>
@@ -158,7 +158,7 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => append({ reps: "", weight: "" })}
+                    onClick={() => append({ reps: "", measurement: "" })}
                     className="w-full"
                 >
                     <Plus className="h-4 w-4 mr-2" />

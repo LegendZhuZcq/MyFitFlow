@@ -1,7 +1,7 @@
 export interface ExerciseSet {
   id: string;
   reps: string;
-  weight: string;
+  measurement: string;
   completed: boolean;
 }
 

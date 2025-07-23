@@ -77,7 +77,7 @@ const ExerciseCard = ({ exercise, onDelete, onEdit, onSetCompletionChange }: Exe
               <TableRow>
                 <TableHead className="w-[50px]">Set</TableHead>
                 <TableHead>Reps</TableHead>
-                <TableHead>Weight</TableHead>
+                <TableHead>Value (kg or secs)</TableHead>
                 <TableHead className="text-right w-[60px]">Done</TableHead>
               </TableRow>
             </TableHeader>
@@ -86,7 +86,7 @@ const ExerciseCard = ({ exercise, onDelete, onEdit, onSetCompletionChange }: Exe
                 <TableRow key={set.id}>
                   <TableCell className="font-medium">{i + 1}</TableCell>
                   <TableCell>{set.reps}</TableCell>
-                  <TableCell>{set.weight}</TableCell>
+                  <TableCell>{set.measurement}</TableCell>
                   <TableCell className="text-right">
                      <Checkbox
                         checked={set.completed}

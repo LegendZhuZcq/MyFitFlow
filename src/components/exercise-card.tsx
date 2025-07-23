@@ -1,30 +1,40 @@
 "use client";
 
-import { Youtube, Trash2, Pencil, Check } from 'lucide-react';
+import { Youtube, Trash2, Pencil } from 'lucide-react';
 import type { Exercise } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { EditExerciseDialog } from './edit-exercise-dialog';
 import { Checkbox } from './ui/checkbox';
-import { Label } from './ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface ExerciseCardProps {
   exercise: Exercise;
   onDelete: (id: string) => void;
-  onEdit: (id: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
-  onSetCompletionChange: (exerciseId: string, setIndex: number, isCompleted: boolean) => void;
+  onEdit: (id: string, updatedExercise: Omit<Exercise, 'id'>) => void;
+  onSetCompletionChange: (exerciseId: string, setId: string, isCompleted: boolean) => void;
 }
 
 const getYouTubeVideoId = (url: string) => {
-  let videoId = '';
-  const urlObj = new URL(url);
-  if (urlObj.hostname === 'youtu.be') {
-    videoId = urlObj.pathname.slice(1);
-  } else if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
-    videoId = urlObj.searchParams.get('v') || '';
+  try {
+    const urlObj = new URL(url);
+    if (urlObj.hostname === 'youtu.be') {
+      return urlObj.pathname.slice(1);
+    } else if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
+      return urlObj.searchParams.get('v') || '';
+    }
+  } catch (error) {
+    console.error("Invalid YouTube URL", error);
+    return null;
   }
-  return videoId;
+  return null;
 };
 
 
@@ -60,28 +70,33 @@ const ExerciseCard = ({ exercise, onDelete, onEdit, onSetCompletionChange }: Exe
               ></iframe>
             </div>
           )}
-          <div className="flex flex-wrap gap-2 text-sm mb-4">
-            <Badge variant="secondary">{exercise.sets} Sets</Badge>
-            <Badge variant="secondary">{exercise.reps} Reps</Badge>
-            <Badge variant="secondary">{exercise.weight}</Badge>
-          </div>
         </div>
         <div className="space-y-2">
-            <Label className="text-sm font-medium">Mark Sets Completed</Label>
-            <div className="flex flex-wrap gap-3">
-            {Array.from({ length: exercise.sets }).map((_, i) => (
-                <div key={i} className="flex items-center gap-2">
-                <Checkbox
-                    id={`${exercise.id}-set-${i}`}
-                    checked={(exercise.completedSets || 0) > i}
-                    onCheckedChange={(checked) => onSetCompletionChange(exercise.id, i, !!checked)}
-                />
-                <Label htmlFor={`${exercise.id}-set-${i}`} className="text-sm">
-                    Set {i + 1}
-                </Label>
-                </div>
-            ))}
-            </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">Set</TableHead>
+                <TableHead>Reps</TableHead>
+                <TableHead>Weight</TableHead>
+                <TableHead className="text-right w-[60px]">Done</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {exercise.sets.map((set, i) => (
+                <TableRow key={set.id}>
+                  <TableCell className="font-medium">{i + 1}</TableCell>
+                  <TableCell>{set.reps}</TableCell>
+                  <TableCell>{set.weight}</TableCell>
+                  <TableCell className="text-right">
+                     <Checkbox
+                        checked={set.completed}
+                        onCheckedChange={(checked) => onSetCompletionChange(exercise.id, set.id, !!checked)}
+                      />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
     </Card>

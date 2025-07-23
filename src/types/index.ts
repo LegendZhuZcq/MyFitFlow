@@ -1,11 +1,15 @@
+export interface ExerciseSet {
+  id: string;
+  reps: string;
+  weight: string;
+  completed: boolean;
+}
+
 export interface Exercise {
   id: string;
   name: string;
-  sets: number;
-  reps: string;
-  weight: string;
+  sets: ExerciseSet[];
   youtubeLink?: string;
-  completedSets?: number;
 }
 
 export interface Workout {

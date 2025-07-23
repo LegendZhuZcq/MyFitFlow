@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { format, addDays, startOfWeek, subDays } from 'date-fns';
-import type { Exercise, Workout } from '@/types';
+import type { Exercise, Workout, ExerciseSet } from '@/types';
 import Header from '@/components/header';
 import CalendarView from '@/components/calendar-view';
 import RoutineDesigner from '@/components/routine-designer';
@@ -22,9 +22,22 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: mondayKey,
       completed: true,
       exercises: [
-        { id: '1', name: 'Bench Press', sets: 4, reps: '8-10', weight: '80kg', youtubeLink: 'https://www.youtube.com/watch?v=SCVCLChgT5A', completedSets: 4 },
-        { id: '2', name: 'Overhead Press', sets: 3, reps: '10-12', weight: '40kg', youtubeLink: 'https://www.youtube.com', completedSets: 1 },
-        { id: '3', name: 'Tricep Pushdowns', sets: 3, reps: '12-15', weight: '25kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '1', name: 'Bench Press', youtubeLink: 'https://www.youtube.com/watch?v=SCVCLChgT5A', sets: [
+          {id: 's1', reps: '8', weight: '80kg', completed: true},
+          {id: 's2', reps: '8', weight: '80kg', completed: true},
+          {id: 's3', reps: '10', weight: '75kg', completed: true},
+          {id: 's4', reps: '10', weight: '70kg', completed: false},
+        ]},
+        { id: '2', name: 'Overhead Press', youtubeLink: 'https://www.youtube.com', sets: [
+          {id: 's5', reps: '10', weight: '40kg', completed: true},
+          {id: 's6', reps: '12', weight: '40kg', completed: false},
+          {id: 's7', reps: '12', weight: '35kg', completed: false},
+        ]},
+        { id: '3', name: 'Tricep Pushdowns', youtubeLink: 'https://www.youtube.com', sets: [
+          {id: 's8', reps: '15', weight: '25kg', completed: false},
+          {id: 's9', reps: '15', weight: '25kg', completed: false},
+          {id: 's10', reps: '15', weight: '20kg', completed: false},
+        ]},
       ],
     },
     [wednesdayKey]: {
@@ -32,9 +45,22 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: wednesdayKey,
       completed: false,
       exercises: [
-        { id: '4', name: 'Pull Ups', sets: 4, reps: 'AMRAP', weight: 'Bodyweight', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: '5', name: 'Bent Over Rows', sets: 3, reps: '10', weight: '60kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: '6', name: 'Bicep Curls', sets: 3, reps: '12-15', weight: '15kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '4', name: 'Pull Ups', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's11', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
+            {id: 's12', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
+            {id: 's13', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
+            {id: 's14', reps: 'AMRAP', weight: 'Bodyweight', completed: false},
+        ]},
+        { id: '5', name: 'Bent Over Rows', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's15', reps: '10', weight: '60kg', completed: false},
+            {id: 's16', reps: '10', weight: '60kg', completed: false},
+            {id: 's17', reps: '10', weight: '60kg', completed: false},
+        ]},
+        { id: '6', name: 'Bicep Curls', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's18', reps: '12', weight: '15kg', completed: false},
+            {id: 's19', reps: '15', weight: '15kg', completed: false},
+            {id: 's20', reps: '15', weight: '12.5kg', completed: false},
+        ]},
       ],
     },
     [fridayKey]: {
@@ -42,32 +68,50 @@ const getInitialWorkouts = (): Record<string, Workout> => {
       date: fridayKey,
       completed: false,
       exercises: [
-        { id: '7', name: 'Squats', sets: 4, reps: '8-10', weight: '100kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: '8', name: 'Romanian Deadlifts', sets: 3, reps: '10-12', weight: '80kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
-        { id: '9', name: 'Leg Press', sets: 3, reps: '12-15', weight: '150kg', youtubeLink: 'https://www.youtube.com', completedSets: 0 },
+        { id: '7', name: 'Squats', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's21', reps: '8', weight: '100kg', completed: false},
+            {id: 's22', reps: '8', weight: '100kg', completed: false},
+            {id: 's23', reps: '10', weight: '90kg', completed: false},
+            {id: 's24', reps: '10', weight: '90kg', completed: false},
+        ]},
+        { id: '8', name: 'Romanian Deadlifts', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's25', reps: '12', weight: '80kg', completed: false},
+            {id: 's26', reps: '12', weight: '80kg', completed: false},
+            {id: 's27', reps: '12', weight: '80kg', completed: false},
+        ]},
+        { id: '9', name: 'Leg Press', youtubeLink: 'https://www.youtube.com', sets: [
+            {id: 's28', reps: '12', weight: '150kg', completed: false},
+            {id: 's29', reps: '15', weight: '140kg', completed: false},
+            {id: 's30', reps: '15', weight: '130kg', completed: false},
+        ]},
       ],
     }
   };
 };
+
+const clientSideHydrate = (initialWorkouts: Record<string, Workout>) => {
+    const clientSideWorkouts: Record<string, Workout> = {};
+    for (const dateKey in initialWorkouts) {
+        const workout = initialWorkouts[dateKey];
+        clientSideWorkouts[dateKey] = {
+            ...workout,
+            exercises: workout.exercises.map(ex => ({
+                ...ex,
+                id: crypto.randomUUID(),
+                sets: ex.sets.map(set => ({...set, id: crypto.randomUUID()}))
+            }))
+        };
+    }
+    return clientSideWorkouts;
+}
 
 export default function Home() {
   const [workouts, setWorkouts] = useState<Record<string, Workout>>({});
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // We are generating randomUUIDs for initial data, which causes a hydration mismatch
-    // if we do it on both server and client.
-    // By setting the workouts in a useEffect, we ensure this only runs on the client.
     const initialWorkouts = getInitialWorkouts();
-    const clientSideWorkouts: Record<string, Workout> = {};
-    for (const dateKey in initialWorkouts) {
-        const workout = initialWorkouts[dateKey];
-        clientSideWorkouts[dateKey] = {
-            ...workout,
-            exercises: workout.exercises.map(ex => ({...ex, id: crypto.randomUUID()}))
-        };
-    }
-    setWorkouts(clientSideWorkouts);
+    setWorkouts(clientSideHydrate(initialWorkouts));
     setIsClient(true);
   }, []);
 
@@ -91,7 +135,11 @@ export default function Home() {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     setWorkouts(prev => {
       const newWorkouts = { ...prev };
-      const newExercise = { ...exercise, id: crypto.randomUUID(), completedSets: 0 };
+      const newExercise: Exercise = {
+        ...exercise,
+        id: crypto.randomUUID(),
+        sets: exercise.sets.map(s => ({...s, id: crypto.randomUUID()})),
+      };
       if (newWorkouts[dateKey]) {
         newWorkouts[dateKey].exercises.push(newExercise);
       } else {
@@ -120,21 +168,29 @@ export default function Home() {
     });
   };
 
-  const handleEditExercise = (exerciseId: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => {
+  const handleEditExercise = (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     setWorkouts(prev => {
       const newWorkouts = { ...prev };
       if (newWorkouts[dateKey]) {
         const exerciseIndex = newWorkouts[dateKey].exercises.findIndex(ex => ex.id === exerciseId);
         if (exerciseIndex > -1) {
-          newWorkouts[dateKey].exercises[exerciseIndex] = { ...newWorkouts[dateKey].exercises[exerciseIndex], ...updatedExercise };
+            const originalExercise = newWorkouts[dateKey].exercises[exerciseIndex];
+            newWorkouts[dateKey].exercises[exerciseIndex] = {
+                ...originalExercise,
+                ...updatedExercise,
+                sets: updatedExercise.sets.map((set, i) => ({
+                    ...set,
+                    id: originalExercise.sets[i]?.id || crypto.randomUUID()
+                }))
+            };
         }
       }
       return newWorkouts;
     });
   };
 
-  const handleSetCompletionChange = (exerciseId: string, setIndex: number, isCompleted: boolean) => {
+  const handleSetCompletionChange = (exerciseId: string, setId: string, isCompleted: boolean) => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     setWorkouts(prev => {
       const newWorkouts = { ...prev };
@@ -142,18 +198,10 @@ export default function Home() {
       if (workout) {
         const exercise = workout.exercises.find(ex => ex.id === exerciseId);
         if (exercise) {
-          // This is a simplified logic. A more robust way would be to store an array of booleans for sets.
-          // For now, we just increment or decrement the count of completed sets.
-          let completedCount = exercise.completedSets || 0;
-          if(isCompleted) {
-             completedCount = Math.min(exercise.sets, completedCount + 1);
-          } else {
-             completedCount = Math.max(0, completedCount - 1);
+          const set = exercise.sets.find(s => s.id === setId);
+          if (set) {
+            set.completed = isCompleted;
           }
-           // A real implementation would need a more robust way to handle which specific set is checked.
-           // This logic just toggles the count, which works for sequential checking.
-          const newCompleted = Array(exercise.sets).fill(false).map((_,i) => i < completedCount);
-          exercise.completedSets = newCompleted.filter(Boolean).length;
         }
       }
       return newWorkouts;

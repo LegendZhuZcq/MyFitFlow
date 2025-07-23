@@ -1,9 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useEffect } from "react";
+import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +29,17 @@ import { Input } from "@/components/ui/input";
 import type { Exercise } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
-const formSchema = z.object({
-  name: z.string(), // Keep name, but it will be read-only or hidden
-  sets: z.coerce.number().min(1, { message: "Must be at least 1 set." }),
+const setSchema = z.object({
+  id: z.string().optional(),
   reps: z.string().min(1, { message: "Reps are required." }),
   weight: z.string().min(1, { message: "Weight is required." }),
+  completed: z.boolean(),
+});
+
+const formSchema = z.object({
+  name: z.string(),
   youtubeLink: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  sets: z.array(setSchema).min(1, "You must add at least one set."),
 });
 
 type EditExerciseFormValues = z.infer<typeof formSchema>;
@@ -41,7 +47,7 @@ type EditExerciseFormValues = z.infer<typeof formSchema>;
 interface EditExerciseDialogProps {
   children: React.ReactNode;
   exercise: Exercise;
-  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
+  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => void;
 }
 
 export function EditExerciseDialog({ children, exercise, onEditExercise }: EditExerciseDialogProps) {
@@ -50,26 +56,32 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: exercise.name,
-      sets: exercise.sets,
-      reps: exercise.reps,
-      weight: exercise.weight,
       youtubeLink: exercise.youtubeLink || "",
+      sets: exercise.sets,
     },
+  });
+  
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "sets",
   });
 
   useEffect(() => {
     form.reset({
       name: exercise.name,
-      sets: exercise.sets,
-      reps: exercise.reps,
-      weight: exercise.weight,
       youtubeLink: exercise.youtubeLink || "",
+      sets: exercise.sets,
     });
   }, [exercise, form]);
 
 
   function onSubmit(values: EditExerciseFormValues) {
-    onEditExercise(exercise.id, values);
+     const updatedExercise = {
+        name: values.name,
+        youtubeLink: values.youtubeLink,
+        sets: values.sets.map(s => ({ ...s, id: s.id || crypto.randomUUID()}))
+    }
+    onEditExercise(exercise.id, updatedExercise);
     toast({
       title: "Exercise Updated",
       description: `${values.name} has been updated.`,
@@ -80,7 +92,7 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Edit Exercise</SheetTitle>
           <SheetDescription>
@@ -102,47 +114,7 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="sets"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sets</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="reps"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reps</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 8-12" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-             <FormField
-                control={form.control}
-                name="weight"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Weight / Duration</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 50kg or Bodyweight" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            
             <FormField
               control={form.control}
               name="youtubeLink"
@@ -156,6 +128,58 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
                 </FormItem>
               )}
             />
+
+            <div>
+              <FormLabel>Sets</FormLabel>
+              <div className="space-y-3 mt-2">
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex items-end gap-2">
+                    <span className="text-sm font-medium text-muted-foreground pt-2">{index + 1}</span>
+                    <FormField
+                      control={form.control}
+                      name={`sets.${index}.reps`}
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                           {index === 0 && <FormLabel>Reps</FormLabel>}
+                          <FormControl>
+                            <Input placeholder="8-12" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`sets.${index}.weight`}
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          {index === 0 && <FormLabel>Weight</FormLabel>}
+                          <FormControl>
+                            <Input placeholder="50kg" {...field} />
+                          </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="shrink-0">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                 <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ reps: "", weight: "", completed: false })}
+                    className="w-full"
+                >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Set
+                </Button>
+              </div>
+               <FormMessage>{form.formState.errors.sets?.message}</FormMessage>
+            </div>
+            
             <SheetFooter>
               <SheetClose asChild>
                 <Button type="button" variant="secondary" id={`close-sheet-${exercise.id}`}>Cancel</Button>

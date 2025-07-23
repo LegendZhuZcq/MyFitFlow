@@ -11,10 +11,10 @@ import { AddExerciseDialog } from './add-exercise-dialog';
 interface RoutineDesignerProps {
   workout: Workout | undefined;
   selectedDate: Date;
-  onAddExercise: (exercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
+  onAddExercise: (exercise: Omit<Exercise, 'id'>) => void;
   onDeleteExercise: (exerciseId: string) => void;
-  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
-  onSetCompletionChange: (exerciseId: string, setIndex: number, isCompleted: boolean) => void;
+  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => void;
+  onSetCompletionChange: (exerciseId: string, setId: string, isCompleted: boolean) => void;
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
 }
@@ -50,7 +50,7 @@ const RoutineDesigner = ({
 
       {workout ? (
         <div className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
             {workout.exercises.map(exercise => (
               <ExerciseCard
                 key={exercise.id}

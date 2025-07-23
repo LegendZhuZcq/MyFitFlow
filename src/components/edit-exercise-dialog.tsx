@@ -153,7 +153,7 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
                       name={`sets.${index}.measurement`}
                       render={({ field }) => (
                         <FormItem className="flex-1">
-                          {index === 0 && <FormLabel>Value (kg or secs)</FormLabel>}
+                          {index === 0 && <FormLabel>Weight/Duration</FormLabel>}
                           <FormControl>
                             <Input placeholder="50kg or 30s" {...field} />
                           </FormControl>

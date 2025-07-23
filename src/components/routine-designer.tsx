@@ -13,6 +13,7 @@ interface RoutineDesignerProps {
   selectedDate: Date;
   onAddExercise: (exercise: Omit<Exercise, 'id'>) => void;
   onDeleteExercise: (exerciseId: string) => void;
+  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => void;
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
 }
@@ -22,6 +23,7 @@ const RoutineDesigner = ({
   selectedDate,
   onAddExercise,
   onDeleteExercise,
+  onEditExercise,
   onLogWorkout,
   onCreateRoutine,
 }: RoutineDesignerProps) => {
@@ -48,7 +50,7 @@ const RoutineDesigner = ({
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {workout.exercises.map(exercise => (
-              <ExerciseCard key={exercise.id} exercise={exercise} onDelete={onDeleteExercise} />
+              <ExerciseCard key={exercise.id} exercise={exercise} onDelete={onDeleteExercise} onEdit={onEditExercise} />
             ))}
           </div>
           <AddExerciseDialog onAddExercise={onAddExercise}>

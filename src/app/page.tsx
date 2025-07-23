@@ -98,6 +98,20 @@ export default function Home() {
       return newWorkouts;
     });
   };
+
+  const handleEditExercise = (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => {
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    setWorkouts(prev => {
+      const newWorkouts = { ...prev };
+      if (newWorkouts[dateKey]) {
+        const exerciseIndex = newWorkouts[dateKey].exercises.findIndex(ex => ex.id === exerciseId);
+        if (exerciseIndex > -1) {
+          newWorkouts[dateKey].exercises[exerciseIndex] = { ...updatedExercise, id: exerciseId };
+        }
+      }
+      return newWorkouts;
+    });
+  };
   
   const handleLogWorkout = () => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
@@ -147,6 +161,7 @@ export default function Home() {
             selectedDate={selectedDate}
             onAddExercise={handleAddExercise}
             onDeleteExercise={handleDeleteExercise}
+            onEditExercise={handleEditExercise}
             onLogWorkout={handleLogWorkout}
             onCreateRoutine={handleCreateRoutine}
           />

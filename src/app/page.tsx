@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -7,6 +6,7 @@ import type { Exercise, Workout, ExerciseSet } from '@/types';
 import Header from '@/components/header';
 import CalendarView from '@/components/calendar-view';
 import RoutineDesigner from '@/components/routine-designer';
+import { MoveWorkoutDialog } from '@/components/move-workout-dialog';
 
 const getInitialWorkouts = (): Record<string, Workout> => {
   const today = new Date();
@@ -233,6 +233,24 @@ export default function Home() {
     }));
   };
 
+  const handleMoveWorkout = (newDate: Date) => {
+    const oldDateKey = format(selectedDate, 'yyyy-MM-dd');
+    const newDateKey = format(newDate, 'yyyy-MM-dd');
+    setWorkouts(prev => {
+      const newWorkouts = { ...prev };
+      if (newWorkouts[oldDateKey]) {
+        // Update the date property within the workout object
+        newWorkouts[oldDateKey].date = newDateKey;
+        // Move the workout to the new date key
+        newWorkouts[newDateKey] = newWorkouts[oldDateKey];
+        // Delete the old entry
+        delete newWorkouts[oldDateKey];
+      }
+      return newWorkouts;
+    });
+    setSelectedDate(newDate);
+  };
+
   const selectedWorkout = useMemo(() => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     return workouts[dateKey];
@@ -266,6 +284,7 @@ export default function Home() {
             onSetCompletionChange={handleSetCompletionChange}
             onLogWorkout={handleLogWorkout}
             onCreateRoutine={handleCreateRoutine}
+            onMoveWorkout={handleMoveWorkout}
           />
         </main>
       </div>

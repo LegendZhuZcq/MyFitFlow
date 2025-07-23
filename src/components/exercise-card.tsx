@@ -77,7 +77,7 @@ const ExerciseCard = ({ exercise, onDelete, onEdit, onSetCompletionChange }: Exe
               <TableRow>
                 <TableHead className="w-[50px]">Set</TableHead>
                 <TableHead>Reps</TableHead>
-                <TableHead>Value (kg or secs)</TableHead>
+                <TableHead>Weight/Duration</TableHead>
                 <TableHead className="text-right w-[60px]">Done</TableHead>
               </TableRow>
             </TableHeader>

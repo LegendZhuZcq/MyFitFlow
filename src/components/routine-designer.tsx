@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from 'react';
 import { format } from 'date-fns';
-import { Dumbbell, Plus } from 'lucide-react';
+import { Dumbbell, Plus, Move } from 'lucide-react';
 import type { Exercise, Workout } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import ExerciseCard from './exercise-card';
 import { AddExerciseDialog } from './add-exercise-dialog';
+import { MoveWorkoutDialog } from './move-workout-dialog';
 
 interface RoutineDesignerProps {
   workout: Workout | undefined;
@@ -17,6 +19,7 @@ interface RoutineDesignerProps {
   onSetCompletionChange: (exerciseId: string, setId: string, isCompleted: boolean) => void;
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
+  onMoveWorkout: (newDate: Date) => void;
 }
 
 const RoutineDesigner = ({
@@ -28,6 +31,7 @@ const RoutineDesigner = ({
   onSetCompletionChange,
   onLogWorkout,
   onCreateRoutine,
+  onMoveWorkout,
 }: RoutineDesignerProps) => {
 
   return (
@@ -41,11 +45,25 @@ const RoutineDesigner = ({
             {format(selectedDate, 'EEEE, MMMM do')}
           </p>
         </div>
-        {workout && (
-          <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"}>
-            {workout.completed ? 'Mark as Incomplete' : 'Log Workout'}
-          </Button>
-        )}
+        <div className="flex space-x-2">
+          {workout && (
+             <MoveWorkoutDialog
+              trigger={
+                <Button variant="outline">
+                  <Move className="mr-2 h-4 w-4" />
+                  Move Workout
+                </Button>
+              }
+              currentWorkout={workout}
+              onMoveWorkout={onMoveWorkout}
+            />
+          )}
+          {workout && (
+            <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"}>
+              {workout.completed ? 'Mark as Incomplete' : 'Log Workout'}
+            </Button>
+          )}
+        </div>
       </div>
 
       {workout ? (

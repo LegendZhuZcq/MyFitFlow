@@ -41,7 +41,7 @@ type EditExerciseFormValues = z.infer<typeof formSchema>;
 interface EditExerciseDialogProps {
   children: React.ReactNode;
   exercise: Exercise;
-  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => void;
+  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
 }
 
 export function EditExerciseDialog({ children, exercise, onEditExercise }: EditExerciseDialogProps) {

@@ -39,7 +39,7 @@ type AddExerciseFormValues = z.infer<typeof formSchema>;
 
 interface AddExerciseDialogProps {
   children: React.ReactNode;
-  onAddExercise: (exercise: Omit<Exercise, 'id'>) => void;
+  onAddExercise: (exercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
 }
 
 export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialogProps) {

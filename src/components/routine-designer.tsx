@@ -11,9 +11,10 @@ import { AddExerciseDialog } from './add-exercise-dialog';
 interface RoutineDesignerProps {
   workout: Workout | undefined;
   selectedDate: Date;
-  onAddExercise: (exercise: Omit<Exercise, 'id'>) => void;
+  onAddExercise: (exercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
   onDeleteExercise: (exerciseId: string) => void;
-  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => void;
+  onEditExercise: (exerciseId: string, updatedExercise: Omit<Exercise, 'id' | 'completedSets'>) => void;
+  onSetCompletionChange: (exerciseId: string, setIndex: number, isCompleted: boolean) => void;
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
 }
@@ -24,6 +25,7 @@ const RoutineDesigner = ({
   onAddExercise,
   onDeleteExercise,
   onEditExercise,
+  onSetCompletionChange,
   onLogWorkout,
   onCreateRoutine,
 }: RoutineDesignerProps) => {
@@ -50,7 +52,13 @@ const RoutineDesigner = ({
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {workout.exercises.map(exercise => (
-              <ExerciseCard key={exercise.id} exercise={exercise} onDelete={onDeleteExercise} onEdit={onEditExercise} />
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onDelete={onDeleteExercise}
+                onEdit={onEditExercise}
+                onSetCompletionChange={onSetCompletionChange}
+              />
             ))}
           </div>
           <AddExerciseDialog onAddExercise={onAddExercise}>

@@ -5,6 +5,7 @@ export interface Exercise {
   reps: string;
   weight: string;
   youtubeLink?: string;
+  completedSets?: number;
 }
 
 export interface Workout {

@@ -1,0 +1,94 @@
+[debug] [2025-08-01T18:10:31.035Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2025-08-01T18:10:39.368Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2025-08-01T18:10:39.369Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-01T18:10:39.369Z] > authorizing via signed-in user (zhu.legend@gmail.com)
+[debug] [2025-08-01T18:10:39.371Z] Checked if tokens are valid: true, expires at: 1754074099255
+[debug] [2025-08-01T18:10:39.371Z] Checked if tokens are valid: true, expires at: 1754074099255
+[debug] [2025-08-01T18:10:39.371Z] [Firebase Plugin] User found:  zhu.legend@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2025-08-01T18:10:39.372Z] Checked if tokens are valid: true, expires at: 1754074099255
+[debug] [2025-08-01T18:10:39.372Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-08-01T18:10:39.377Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting Data Connect toolkit (version 2.10.1) on port 50001
+[debug] [2025-08-01T18:10:40.382Z] I0801 11:10:40.360839   42004 control.go:84] [/emulator/myfitflow-2-service b07a] UpdateResources(): done
+Schema: sources: schema/schema.gql [531B] 
+Connector "default": sources: connector/default.gql [1343B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:40.360839   42004 control.go:84] [/emulator/myfitflow-2-service b07a] UpdateResources(): done\nSchema: sources: schema/schema.gql [531B] \nConnector \"default\": sources: connector/default.gql [1343B] \n"}}
+[debug] [2025-08-01T18:10:40.382Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-08-01T18:10:40.383Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2025-08-01T18:10:40.383Z] Starting Data Connect Emulator with command {"binary":"/Users/zchuanqi/.cache/firebase/emulators/dataconnect-emulator-2.10.1","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/zchuanqi/Developer/MyFitFlow/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting Data Connect Emulator with command {\"binary\":\"/Users/zchuanqi/.cache/firebase/emulators/dataconnect-emulator-2.10.1\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/zchuanqi/Developer/MyFitFlow/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: Data Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"Data Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2025-08-01T18:10:40.828Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-08-01T18:10:40.829Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-08-01T18:10:40.969Z] I0801 11:10:40.919974   42011 load.go:37] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:40.919974   42011 load.go:37] Reloading schema and connectors...\n"}}
+[debug] [2025-08-01T18:10:41.091Z] I0801 11:10:41.044709   42011 control.go:84] [/emulator/myfitflow-2-service b76b] UpdateResources(): done
+Schema: sources: schema/schema.gql [531B] 
+Connector "default": sources: connector/default.gql [1343B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.044709   42011 control.go:84] [/emulator/myfitflow-2-service b76b] UpdateResources(): done\nSchema: sources: schema/schema.gql [531B] \nConnector \"default\": sources: connector/default.gql [1343B] \n"}}
+[debug] [2025-08-01T18:10:41.100Z] I0801 11:10:41.092223   42011 codegen.go:82] [connector "default" javascriptSdk] Generating sources into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.092223   42011 codegen.go:82] [connector \"default\" javascriptSdk] Generating sources into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector\"\n"}}
+[debug] [2025-08-01T18:10:41.115Z] I0801 11:10:41.115358   42011 collector.go:107] schema extensions wrote into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect/.dataconnect/schema"
+Generated sources: main/input.gql [32158B] main/relation.gql [16691B] main/query.gql [5068B] main/mutation.gql [13655B] prelude.gql [73172B] main/implicit.gql [1776B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.115358   42011 collector.go:107] schema extensions wrote into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect/.dataconnect/schema\"\nGenerated sources: main/input.gql [32158B] main/relation.gql [16691B] main/query.gql [5068B] main/mutation.gql [13655B] prelude.gql [73172B] main/implicit.gql [1776B] \n"}}
+[debug] [2025-08-01T18:10:41.120Z] I0801 11:10:41.120287   42011 collector.go:107] connector "default" javascriptSdk wrote into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector"
+Generated sources: esm/index.esm.js [3225B] esm/package.json [17B] react/esm/index.esm.js [2809B] react/README.md [43023B] index.d.ts [7617B] index.cjs.js [3762B] package.json [860B] README.md [37201B] react/index.d.ts [3874B] react/package.json [468B] react/esm/package.json [17B] react/index.cjs.js [2992B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.120287   42011 collector.go:107] connector \"default\" javascriptSdk wrote into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector\"\nGenerated sources: esm/index.esm.js [3225B] esm/package.json [17B] react/esm/index.esm.js [2809B] react/README.md [43023B] index.d.ts [7617B] index.cjs.js [3762B] package.json [860B] README.md [37201B] react/index.d.ts [3874B] react/package.json [468B] react/esm/package.json [17B] react/index.cjs.js [2992B] \n"}}
+[debug] [2025-08-01T18:10:41.128Z] I0801 11:10:41.127699   42011 installsdk.go:55] Package @firebasegen/default-connector is already installed. Skipping installation
+I0801 11:10:41.127897   42011 load.go:115] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.127699   42011 installsdk.go:55] Package @firebasegen/default-connector is already installed. Skipping installation\nI0801 11:10:41.127897   42011 load.go:115] Finished reloading\n"}}
+[debug] [2025-08-01T18:10:41.136Z] I0801 11:10:41.136032   42011 dev.go:95] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.136032   42011 dev.go:95] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2025-08-01T18:10:41.527Z] I0801 11:10:41.527162   42011 engine.go:174] [/emulator/myfitflow-2-service b76b] ExecuteGraphqlRead IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 11:10:41.527162   42011 engine.go:174] [/emulator/myfitflow-2-service b76b] ExecuteGraphqlRead IntrospectionQuery: succeeded. \n"}}
+[info] [Firebase Plugin] Stopping Data Connect toolkit
+[warn] ⚠  Data Connect Emulator has exited upon receiving signal: SIGINT 
+[debug] [2025-08-01T19:03:14.518Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2025-08-01T19:03:21.202Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2025-08-01T19:03:21.204Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-01T19:03:21.204Z] > authorizing via signed-in user (zhu.legend@gmail.com)
+[debug] [2025-08-01T19:03:21.206Z] Checked if tokens are valid: false, expires at: 1754074099255
+[debug] [2025-08-01T19:03:21.206Z] Checked if tokens are valid: false, expires at: 1754074099255
+[debug] [2025-08-01T19:03:21.206Z] > refreshing access token with scopes: []
+[debug] [2025-08-01T19:03:21.207Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-08-01T19:03:21.207Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-01T19:03:21.212Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting Data Connect toolkit (version 2.10.1) on port 50001
+[debug] [2025-08-01T19:03:23.087Z] I0801 12:03:23.059992   58435 control.go:84] [/emulator/myfitflow-2-service aa9d] UpdateResources(): done
+Schema: sources: schema/schema.gql [531B] 
+Connector "default": sources: connector/default.gql [1343B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.059992   58435 control.go:84] [/emulator/myfitflow-2-service aa9d] UpdateResources(): done\nSchema: sources: schema/schema.gql [531B] \nConnector \"default\": sources: connector/default.gql [1343B] \n"}}
+[debug] [2025-08-01T19:03:23.088Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-08-01T19:03:23.088Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2025-08-01T19:03:23.088Z] Starting Data Connect Emulator with command {"binary":"/Users/zchuanqi/.cache/firebase/emulators/dataconnect-emulator-2.10.1","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/zchuanqi/Developer/MyFitFlow/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting Data Connect Emulator with command {\"binary\":\"/Users/zchuanqi/.cache/firebase/emulators/dataconnect-emulator-2.10.1\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/zchuanqi/Developer/MyFitFlow/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: Data Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"Data Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2025-08-01T19:03:23.388Z] I0801 12:03:23.354470   58438 load.go:37] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.354470   58438 load.go:37] Reloading schema and connectors...\n"}}
+[debug] [2025-08-01T19:03:23.430Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-08-01T19:03:23.430Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-01T19:03:23.451Z] [Firebase Plugin] User found:  zhu.legend@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2025-08-01T19:03:23.453Z] Checked if tokens are valid: true, expires at: 1754078602430
+[debug] [2025-08-01T19:03:23.453Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-08-01T19:03:23.534Z] I0801 12:03:23.528955   58438 control.go:84] [/emulator/myfitflow-2-service cf27] UpdateResources(): done
+Schema: sources: schema/schema.gql [531B] 
+Connector "default": sources: connector/default.gql [1343B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.528955   58438 control.go:84] [/emulator/myfitflow-2-service cf27] UpdateResources(): done\nSchema: sources: schema/schema.gql [531B] \nConnector \"default\": sources: connector/default.gql [1343B] \n"}}
+[debug] [2025-08-01T19:03:23.718Z] I0801 12:03:23.679245   58438 codegen.go:82] [connector "default" javascriptSdk] Generating sources into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector"
+I0801 12:03:23.713165   58438 collector.go:107] schema extensions wrote into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [73172B] main/implicit.gql [1776B] main/input.gql [32158B] main/relation.gql [16691B] main/query.gql [5068B] main/mutation.gql [13655B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.679245   58438 codegen.go:82] [connector \"default\" javascriptSdk] Generating sources into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector\"\nI0801 12:03:23.713165   58438 collector.go:107] schema extensions wrote into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [73172B] main/implicit.gql [1776B] main/input.gql [32158B] main/relation.gql [16691B] main/query.gql [5068B] main/mutation.gql [13655B] \n"}}
+[debug] [2025-08-01T19:03:23.743Z] I0801 12:03:23.738423   58438 collector.go:107] connector "default" javascriptSdk wrote into "/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector"
+Generated sources: index.d.ts [7617B] package.json [860B] react/package.json [468B] react/esm/package.json [17B] esm/index.esm.js [3225B] esm/package.json [17B] index.cjs.js [3762B] README.md [37201B] react/index.d.ts [3874B] react/index.cjs.js [2992B] react/esm/index.esm.js [2809B] react/README.md [43023B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.738423   58438 collector.go:107] connector \"default\" javascriptSdk wrote into \"/Users/zchuanqi/Developer/MyFitFlow/dataconnect-generated/js/default-connector\"\nGenerated sources: index.d.ts [7617B] package.json [860B] react/package.json [468B] react/esm/package.json [17B] esm/index.esm.js [3225B] esm/package.json [17B] index.cjs.js [3762B] README.md [37201B] react/index.d.ts [3874B] react/index.cjs.js [2992B] react/esm/index.esm.js [2809B] react/README.md [43023B] \n"}}
+[debug] [2025-08-01T19:03:23.784Z] I0801 12:03:23.777424   58438 installsdk.go:55] Package @firebasegen/default-connector is already installed. Skipping installation
+I0801 12:03:23.777610   58438 load.go:115] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.777424   58438 installsdk.go:55] Package @firebasegen/default-connector is already installed. Skipping installation\nI0801 12:03:23.777610   58438 load.go:115] Finished reloading\n"}}
+[debug] [2025-08-01T19:03:23.819Z] I0801 12:03:23.816966   58438 dev.go:95] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:23.816966   58438 dev.go:95] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2025-08-01T19:03:23.937Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-08-01T19:03:23.937Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-08-01T19:03:24.290Z] I0801 12:03:24.289392   58438 engine.go:174] [/emulator/myfitflow-2-service cf27] ExecuteGraphqlRead IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0801 12:03:24.289392   58438 engine.go:174] [/emulator/myfitflow-2-service cf27] ExecuteGraphqlRead IntrospectionQuery: succeeded. \n"}}

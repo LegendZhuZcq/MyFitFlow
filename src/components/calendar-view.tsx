@@ -4,7 +4,7 @@ import { format, addDays, isSameDay, isToday } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { Workout } from '@/types';
+import type { LegacyWorkout as Workout } from '@/types';
 
 interface CalendarViewProps {
   selectedDate: Date;

@@ -57,7 +57,12 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
     defaultValues: {
       name: exercise.name,
       youtubeLink: exercise.youtubeLink || "",
-      sets: exercise.sets,
+      sets: exercise.sets.map(set => ({
+        id: set.id,
+        reps: set.reps.toString(),
+        measurement: set.measurement,
+        completed: set.completed
+      })),
     },
   });
   
@@ -70,16 +75,32 @@ export function EditExerciseDialog({ children, exercise, onEditExercise }: EditE
     form.reset({
       name: exercise.name,
       youtubeLink: exercise.youtubeLink || "",
-      sets: exercise.sets,
+      sets: exercise.sets.map(set => ({
+        id: set.id,
+        reps: set.reps.toString(),
+        measurement: set.measurement,
+        completed: set.completed
+      })),
     });
   }, [exercise, form]);
 
 
   function onSubmit(values: EditExerciseFormValues) {
+     const now = new Date();
      const updatedExercise = {
+        workoutId: exercise.workoutId,
         name: values.name,
         youtubeLink: values.youtubeLink,
-        sets: values.sets.map(s => ({ ...s, id: s.id || crypto.randomUUID()}))
+        createdAt: exercise.createdAt,
+        updatedAt: now,
+        sets: values.sets.map(s => ({ 
+          ...s, 
+          id: s.id || crypto.randomUUID(),
+          exerciseId: exercise.id,
+          reps: parseInt(s.reps) || 0,
+          createdAt: exercise.createdAt,
+          updatedAt: now
+        }))
     }
     onEditExercise(exercise.id, updatedExercise);
     toast({

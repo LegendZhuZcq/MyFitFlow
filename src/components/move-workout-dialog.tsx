@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
-import { Workout } from '@/types';
+import { LegacyWorkout as Workout } from '@/types';
 
 interface MoveWorkoutDialogProps {
   trigger: React.ReactNode;

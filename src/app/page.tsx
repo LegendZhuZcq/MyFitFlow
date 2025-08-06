@@ -8,6 +8,7 @@ import CalendarView from '@/components/calendar-view';
 import RoutineDesigner from '@/components/routine-designer';
 import { MoveWorkoutDialog } from '@/components/move-workout-dialog';
 import { getInitialWorkouts } from '@/data/sample-workouts';
+import AuthWrapper from '@/components/auth-wrapper';
 
 
 const clientSideHydrate = (initialWorkouts: Record<string, Workout>) => {
@@ -194,32 +195,34 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground font-body">
-      <Header />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 md:px-8 border-b border-border">
-          <CalendarView
-            selectedDate={selectedDate}
-            onDateSelect={handleDateSelect}
-            workouts={workouts}
-            currentWeek={currentWeek}
-            onWeekChange={handleWeekChange}
-          />
+    <AuthWrapper>
+      <div className="flex flex-col h-screen bg-background text-foreground font-body">
+        <Header />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="p-4 md:px-8 border-b border-border">
+            <CalendarView
+              selectedDate={selectedDate}
+              onDateSelect={handleDateSelect}
+              workouts={workouts}
+              currentWeek={currentWeek}
+              onWeekChange={handleWeekChange}
+            />
+          </div>
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <RoutineDesigner
+              workout={selectedWorkout}
+              selectedDate={selectedDate}
+              onAddExercise={handleAddExercise}
+              onDeleteExercise={handleDeleteExercise}
+              onEditExercise={handleEditExercise}
+              onSetCompletionChange={handleSetCompletionChange}
+              onLogWorkout={handleLogWorkout}
+              onCreateRoutine={handleCreateRoutine}
+              onMoveWorkout={handleMoveWorkout}
+            />
+          </main>
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <RoutineDesigner
-            workout={selectedWorkout}
-            selectedDate={selectedDate}
-            onAddExercise={handleAddExercise}
-            onDeleteExercise={handleDeleteExercise}
-            onEditExercise={handleEditExercise}
-            onSetCompletionChange={handleSetCompletionChange}
-            onLogWorkout={handleLogWorkout}
-            onCreateRoutine={handleCreateRoutine}
-            onMoveWorkout={handleMoveWorkout}
-          />
-        </main>
       </div>
-    </div>
+    </AuthWrapper>
   );
 }

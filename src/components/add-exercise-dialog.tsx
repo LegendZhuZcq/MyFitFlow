@@ -66,36 +66,45 @@ export function AddExerciseDialog({ children, onAddExercise, exerciseTemplates =
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "sets",
   });
 
   const handleTemplateSelect = (templateName: string) => {
-    if (templateName === "new") {
-      // Reset to default values for new exercise
+    try {
+      if (templateName === "new") {
+        // Reset to default values for new exercise
+        form.reset({
+          name: "",
+          youtubeLink: "",
+          sets: [{ reps: "8-12", measurement: "" }],
+        });
+        return;
+      }
+
+      const template = exerciseTemplates.find(t => t.name === templateName);
+      if (template) {
+        // Set form values from template
+        form.setValue("name", template.name);
+        form.setValue("youtubeLink", template.youtubeLink || "");
+        
+        // Replace all sets at once instead of removing one by one
+        const templateSets = template.lastUsedSets.map(set => ({
+          reps: set.reps,
+          measurement: set.measurement
+        }));
+        
+        // Use replace to safely update all sets at once
+        replace(templateSets);
+      }
+    } catch (error) {
+      console.error('Error selecting template:', error);
+      // Fallback to reset form if there's an error
       form.reset({
         name: "",
         youtubeLink: "",
         sets: [{ reps: "8-12", measurement: "" }],
-      });
-      return;
-    }
-
-    const template = exerciseTemplates.find(t => t.name === templateName);
-    if (template) {
-      // Clear existing sets
-      while (fields.length > 0) {
-        remove(0);
-      }
-      
-      // Set form values from template
-      form.setValue("name", template.name);
-      form.setValue("youtubeLink", template.youtubeLink || "");
-      
-      // Add sets from template (all marked as incomplete)
-      template.lastUsedSets.forEach(set => {
-        append({ reps: set.reps, measurement: set.measurement });
       });
     }
   };
@@ -115,7 +124,7 @@ export function AddExerciseDialog({ children, onAddExercise, exerciseTemplates =
           exerciseId: '',
           createdAt: now,
           updatedAt: now,
-          reps: parseInt(s.reps) || 0
+          reps: s.reps.includes('-') ? 0 : parseInt(s.reps) || 0
         }))
     }
     onAddExercise(newExercise);

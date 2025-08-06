@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Dumbbell, Plus, Move } from 'lucide-react';
+import { Dumbbell, Plus, Move, Edit2 } from 'lucide-react';
 import type { Exercise, Workout } from '@/types';
 import type { ExerciseTemplate } from '@/lib/exercise-templates';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import ExerciseCard from './exercise-card';
 import { AddExerciseDialog } from './add-exercise-dialog';
 import { MoveWorkoutDialog } from './move-workout-dialog';
@@ -21,6 +22,7 @@ interface RoutineDesignerProps {
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
   onMoveWorkout: (newDate: Date) => void;
+  onEditWorkoutName?: (newName: string) => void;
   exerciseTemplates?: ExerciseTemplate[];
 }
 
@@ -34,23 +36,81 @@ const RoutineDesigner = ({
   onLogWorkout,
   onCreateRoutine,
   onMoveWorkout,
+  onEditWorkoutName,
   exerciseTemplates = [],
 }: RoutineDesignerProps) => {
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState('');
+
+  const handleEditName = () => {
+    if (workout) {
+      setEditedName(workout.name);
+      setIsEditingName(true);
+    }
+  };
+
+  const handleSaveName = () => {
+    if (onEditWorkoutName && editedName.trim()) {
+      onEditWorkoutName(editedName.trim());
+    }
+    setIsEditingName(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingName(false);
+    setEditedName('');
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            {workout ? workout.name : 'Rest Day'}
-          </h2>
+          {workout && isEditingName ? (
+            <div className="flex items-center space-x-2 mb-2">
+              <Input
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                className="text-2xl font-bold tracking-tight h-auto py-1 px-2"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSaveName();
+                  } else if (e.key === 'Escape') {
+                    handleCancelEdit();
+                  }
+                }}
+                autoFocus
+              />
+              <Button size="sm" onClick={handleSaveName}>
+                Save
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleCancelEdit}>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2 mb-2">
+              <h2 className="text-2xl font-bold tracking-tight">
+                {workout ? workout.name : 'Rest Day'}
+              </h2>
+              {workout && onEditWorkoutName && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleEditName}
+                  className="h-8 w-8 p-0"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          )}
           <p className="text-muted-foreground">
             {format(selectedDate, 'EEEE, MMMM do')}
           </p>
         </div>
-        <div className="flex space-x-2">
-          {workout && (
-             <MoveWorkoutDialog
+        {workout && (
+          <div className="flex space-x-2">
+            <MoveWorkoutDialog
               trigger={
                 <Button variant="outline">
                   <Move className="mr-2 h-4 w-4" />
@@ -60,15 +120,18 @@ const RoutineDesigner = ({
               currentWorkout={workout}
               onMoveWorkout={onMoveWorkout}
             />
-          )}
-          {workout && (
             <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"}>
-              {workout.completed ? 'Mark as Incomplete' : 'Log Workout'}
+              {workout.completed ? 'Mark as Incomplete' : 'Mark as completed'}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-
+          <AddExerciseDialog onAddExercise={onAddExercise} exerciseTemplates={exerciseTemplates}>
+            <Button variant="outline" className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Exercise
+            </Button>
+          </AddExerciseDialog>
       {workout ? (
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
@@ -82,12 +145,6 @@ const RoutineDesigner = ({
               />
             ))}
           </div>
-          <AddExerciseDialog onAddExercise={onAddExercise} exerciseTemplates={exerciseTemplates}>
-            <Button variant="outline" className="w-full">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Exercise
-            </Button>
-          </AddExerciseDialog>
         </div>
       ) : (
         <Card className="flex flex-col items-center justify-center p-12 space-y-4 border-dashed">

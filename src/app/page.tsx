@@ -249,6 +249,8 @@ export default function Home() {
   }, [selectedDate, workouts]);
 
   const exerciseTemplates = useMemo(() => {
+    // Only recalculate if workouts object reference changes
+    // This prevents unnecessary recalculations on every render
     return getExerciseTemplates(workouts);
   }, [workouts]);
 

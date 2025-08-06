@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import { Dumbbell, Plus, Move } from 'lucide-react';
 import type { Exercise, Workout } from '@/types';
+import type { ExerciseTemplate } from '@/lib/exercise-templates';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import ExerciseCard from './exercise-card';
@@ -20,6 +21,7 @@ interface RoutineDesignerProps {
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
   onMoveWorkout: (newDate: Date) => void;
+  exerciseTemplates?: ExerciseTemplate[];
 }
 
 const RoutineDesigner = ({
@@ -32,6 +34,7 @@ const RoutineDesigner = ({
   onLogWorkout,
   onCreateRoutine,
   onMoveWorkout,
+  exerciseTemplates = [],
 }: RoutineDesignerProps) => {
 
   return (
@@ -79,7 +82,7 @@ const RoutineDesigner = ({
               />
             ))}
           </div>
-          <AddExerciseDialog onAddExercise={onAddExercise}>
+          <AddExerciseDialog onAddExercise={onAddExercise} exerciseTemplates={exerciseTemplates}>
             <Button variant="outline" className="w-full">
               <Plus className="mr-2 h-4 w-4" />
               Add Exercise

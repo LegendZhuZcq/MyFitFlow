@@ -25,7 +25,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Exercise } from "@/types";
+import type { ExerciseTemplate } from "@/lib/exercise-templates";
 import { useToast } from "@/hooks/use-toast";
 
 const setSchema = z.object({
@@ -44,9 +52,10 @@ type AddExerciseFormValues = z.infer<typeof formSchema>;
 interface AddExerciseDialogProps {
   children: React.ReactNode;
   onAddExercise: (exercise: Omit<Exercise, 'id'>) => void;
+  exerciseTemplates?: ExerciseTemplate[];
 }
 
-export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialogProps) {
+export function AddExerciseDialog({ children, onAddExercise, exerciseTemplates = [] }: AddExerciseDialogProps) {
   const { toast } = useToast();
   const form = useForm<AddExerciseFormValues>({
     resolver: zodResolver(formSchema),
@@ -62,11 +71,52 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
     name: "sets",
   });
 
+  const handleTemplateSelect = (templateName: string) => {
+    if (templateName === "new") {
+      // Reset to default values for new exercise
+      form.reset({
+        name: "",
+        youtubeLink: "",
+        sets: [{ reps: "8-12", measurement: "" }],
+      });
+      return;
+    }
+
+    const template = exerciseTemplates.find(t => t.name === templateName);
+    if (template) {
+      // Clear existing sets
+      while (fields.length > 0) {
+        remove(0);
+      }
+      
+      // Set form values from template
+      form.setValue("name", template.name);
+      form.setValue("youtubeLink", template.youtubeLink || "");
+      
+      // Add sets from template (all marked as incomplete)
+      template.lastUsedSets.forEach(set => {
+        append({ reps: set.reps, measurement: set.measurement });
+      });
+    }
+  };
+
   function onSubmit(values: AddExerciseFormValues) {
+    const now = new Date();
     const newExercise = {
         name: values.name,
         youtubeLink: values.youtubeLink,
-        sets: values.sets.map(s => ({ ...s, completed: false, id: '' }))
+        workoutId: '',
+        createdAt: now,
+        updatedAt: now,
+        sets: values.sets.map(s => ({ 
+          ...s, 
+          completed: false, 
+          id: '',
+          exerciseId: '',
+          createdAt: now,
+          updatedAt: now,
+          reps: parseInt(s.reps) || 0
+        }))
     }
     onAddExercise(newExercise);
     toast({
@@ -89,6 +139,25 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
         </SheetHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            {exerciseTemplates.length > 0 && (
+              <div className="space-y-2">
+                <FormLabel>Exercise Template</FormLabel>
+                <Select onValueChange={handleTemplateSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Create new exercise or select from previous" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">Create New Exercise</SelectItem>
+                    {exerciseTemplates.map((template) => (
+                      <SelectItem key={template.name} value={template.name}>
+                        {template.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="name"
@@ -143,7 +212,7 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
                         <FormItem className="flex-1">
                           {index === 0 && <FormLabel>Value (kg or secs)</FormLabel>}
                           <FormControl>
-                            <Input placeholder="50kg or 30s" {...field} />
+                            <Input placeholder="30lbs or 20s" {...field} />
                           </FormControl>
                            <FormMessage />
                         </FormItem>
@@ -158,7 +227,18 @@ export function AddExerciseDialog({ children, onAddExercise }: AddExerciseDialog
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => append({ reps: "", measurement: "" })}
+                    onClick={() => {
+                      if (fields.length > 0) {
+                        // Get the current values from the form for the last set
+                        const lastIndex = fields.length - 1;
+                        const lastSetReps = form.getValues(`sets.${lastIndex}.reps`);
+                        const lastSetMeasurement = form.getValues(`sets.${lastIndex}.measurement`);
+                        append({ reps: lastSetReps || "", measurement: lastSetMeasurement || "" });
+                      } else {
+                        // Use empty values if no sets exist
+                        append({ reps: "", measurement: "" });
+                      }
+                    }}
                     className="w-full"
                 >
                     <Plus className="h-4 w-4 mr-2" />

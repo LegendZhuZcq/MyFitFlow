@@ -1,15 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Rules for the workout database and fitflow collection
-    match /workout/fitflow/workouts/{workoutId} {
+    // Rules for the fitflow collection
+    match /fitflow/{workoutId} {
       // Allow read and write access to authenticated users
-      // You can modify these rules based on your authentication requirements
-      allow read, write: if true; // For now, allow all access for testing
+      // Only allow users to access their own workouts
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
       
-      // More secure rules (uncomment when you have authentication):
-      // allow read, write: if request.auth != null;
-      // allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      // Allow creating new workouts for authenticated users
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
     
     // Default rule - deny all other access

@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'MyFitFlow',
-  description: 'Your personal workout tracker and planner',
+  title: 'ElaineFitFlow',
+  description: "Elaine's personal workout tracker and planner",
 };
 
 export default function RootLayout({

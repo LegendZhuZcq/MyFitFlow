@@ -2,41 +2,40 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { format, addDays, startOfWeek, subDays } from 'date-fns';
-import type { Exercise, Workout, ExerciseSet } from '@/types';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import type { Exercise, Workout } from '@/types';
 import Header from '@/components/header';
 import CalendarView from '@/components/calendar-view';
 import RoutineDesigner from '@/components/routine-designer';
-import { MoveWorkoutDialog } from '@/components/move-workout-dialog';
-import { getInitialWorkouts } from '@/data/sample-workouts';
+import { getExerciseTemplates } from '@/lib/exercise-templates';
+import { subscribeToUserWorkouts, updateWorkoutInFirestore, deleteWorkoutFromFirestore } from '@/lib/firestore-service';
 import AuthWrapper from '@/components/auth-wrapper';
 
 
-const clientSideHydrate = (initialWorkouts: Record<string, Workout>) => {
-    const clientSideWorkouts: Record<string, Workout> = {};
-    if (typeof window === 'undefined') return initialWorkouts;
-    for (const dateKey in initialWorkouts) {
-        const workout = initialWorkouts[dateKey];
-        clientSideWorkouts[dateKey] = {
-            ...workout,
-            exercises: workout.exercises.map(ex => ({
-                ...ex,
-                id: crypto.randomUUID(),
-                sets: ex.sets.map(set => ({...set, id: crypto.randomUUID()}))
-            }))
-        };
-    }
-    return clientSideWorkouts;
-}
-
 export default function Home() {
   const [workouts, setWorkouts] = useState<Record<string, Workout>>({});
+  const [user, setUser] = useState<User | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const initialWorkouts = getInitialWorkouts();
-    setWorkouts(clientSideHydrate(initialWorkouts));
-    setIsClient(true);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setIsClient(true);
+    });
+
+    return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const unsubscribe = subscribeToUserWorkouts(user.uid, (userWorkouts) => {
+      setWorkouts(userWorkouts);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -54,140 +53,204 @@ export default function Home() {
     });
   };
 
-  const handleAddExercise = (exercise: Omit<Exercise, 'id'>) => {
+  const handleAddExercise = async (exercise: Omit<Exercise, 'id'>) => {
+    if (!user) return;
+    
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     const now = new Date();
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      const newExercise: Exercise = {
-        ...exercise,
-        id: crypto.randomUUID(),
-        sets: exercise.sets.map(s => ({...s, id: crypto.randomUUID(), exerciseId: crypto.randomUUID()})),
+    
+    const newExercise: Exercise = {
+      ...exercise,
+      id: crypto.randomUUID(),
+      sets: exercise.sets.map(s => ({...s, id: crypto.randomUUID(), exerciseId: crypto.randomUUID()})),
+    };
+
+    let updatedWorkout: Workout;
+    if (workouts[dateKey]) {
+      updatedWorkout = {
+        ...workouts[dateKey],
+        exercises: [...workouts[dateKey].exercises, newExercise],
+        updatedAt: now,
       };
-      if (newWorkouts[dateKey]) {
-        newWorkouts[dateKey].exercises.push(newExercise);
-      } else {
-        newWorkouts[dateKey] = {
-          id: crypto.randomUUID(),
-          userId: 'user-1',
-          name: 'New Routine',
-          date: selectedDate,
-          completed: false,
-          createdAt: now,
-          updatedAt: now,
-          exercises: [newExercise],
-        };
-      }
-      return newWorkouts;
-    });
-  };
-  
-  const handleDeleteExercise = (exerciseId: string) => {
-    const dateKey = format(selectedDate, 'yyyy-MM-dd');
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      if (newWorkouts[dateKey]) {
-        newWorkouts[dateKey].exercises = newWorkouts[dateKey].exercises.filter(ex => ex.id !== exerciseId);
-        if (newWorkouts[dateKey].exercises.length === 0) {
-          delete newWorkouts[dateKey];
-        }
-      }
-      return newWorkouts;
-    });
-  };
-
-  const handleEditExercise = (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => {
-    const dateKey = format(selectedDate, 'yyyy-MM-dd');
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      if (newWorkouts[dateKey]) {
-        const exerciseIndex = newWorkouts[dateKey].exercises.findIndex(ex => ex.id === exerciseId);
-        if (exerciseIndex > -1) {
-            const originalExercise = newWorkouts[dateKey].exercises[exerciseIndex];
-            newWorkouts[dateKey].exercises[exerciseIndex] = {
-                ...originalExercise,
-                ...updatedExercise,
-                sets: updatedExercise.sets.map((set, i) => ({
-                    ...set,
-                    id: originalExercise.sets[i]?.id || crypto.randomUUID()
-                }))
-            };
-        }
-      }
-      return newWorkouts;
-    });
-  };
-
-  const handleSetCompletionChange = (exerciseId: string, setId: string, isCompleted: boolean) => {
-    const dateKey = format(selectedDate, 'yyyy-MM-dd');
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      const workout = newWorkouts[dateKey];
-      if (workout) {
-        const exercise = workout.exercises.find(ex => ex.id === exerciseId);
-        if (exercise) {
-          const set = exercise.sets.find(s => s.id === setId);
-          if (set) {
-            set.completed = isCompleted;
-          }
-        }
-      }
-      return newWorkouts;
-    });
-  };
-  
-  const handleLogWorkout = () => {
-    const dateKey = format(selectedDate, 'yyyy-MM-dd');
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      if (newWorkouts[dateKey]) {
-        newWorkouts[dateKey].completed = !newWorkouts[dateKey].completed;
-      }
-      return newWorkouts;
-    });
-  };
-  
-  const handleCreateRoutine = () => {
-    const dateKey = format(selectedDate, 'yyyy-MM-dd');
-    const now = new Date();
-    setWorkouts(prev => ({
-      ...prev,
-      [dateKey]: {
+    } else {
+      updatedWorkout = {
         id: crypto.randomUUID(),
-        userId: 'user-1',
+        userId: user.uid,
         name: 'New Routine',
         date: selectedDate,
         completed: false,
         createdAt: now,
         updatedAt: now,
-        exercises: [],
+        exercises: [newExercise],
+      };
+    }
+
+    try {
+      await updateWorkoutInFirestore(updatedWorkout);
+    } catch (error) {
+      console.error('Error adding exercise:', error);
+    }
+  };
+  
+  const handleDeleteExercise = async (exerciseId: string) => {
+    if (!user) return;
+    
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    const workout = workouts[dateKey];
+    if (!workout) return;
+
+    const updatedExercises = workout.exercises.filter(ex => ex.id !== exerciseId);
+    
+    try {
+      if (updatedExercises.length === 0) {
+        await deleteWorkoutFromFirestore(workout.id);
+      } else {
+        const updatedWorkout = {
+          ...workout,
+          exercises: updatedExercises,
+          updatedAt: new Date(),
+        };
+        await updateWorkoutInFirestore(updatedWorkout);
       }
-    }));
+    } catch (error) {
+      console.error('Error deleting exercise:', error);
+    }
   };
 
-  const handleMoveWorkout = (newDate: Date) => {
+  const handleEditExercise = async (exerciseId: string, updatedExercise: Omit<Exercise, 'id'>) => {
+    if (!user) return;
+    
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    const workout = workouts[dateKey];
+    if (!workout) return;
+
+    const exerciseIndex = workout.exercises.findIndex(ex => ex.id === exerciseId);
+    if (exerciseIndex === -1) return;
+
+    const originalExercise = workout.exercises[exerciseIndex];
+    const updatedExercises = [...workout.exercises];
+    updatedExercises[exerciseIndex] = {
+      ...originalExercise,
+      ...updatedExercise,
+      sets: updatedExercise.sets.map((set, i) => ({
+        ...set,
+        id: originalExercise.sets[i]?.id || crypto.randomUUID()
+      }))
+    };
+
+    const updatedWorkout = {
+      ...workout,
+      exercises: updatedExercises,
+      updatedAt: new Date(),
+    };
+
+    try {
+      await updateWorkoutInFirestore(updatedWorkout);
+    } catch (error) {
+      console.error('Error editing exercise:', error);
+    }
+  };
+
+  const handleSetCompletionChange = async (exerciseId: string, setId: string, isCompleted: boolean) => {
+    if (!user) return;
+    
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    const workout = workouts[dateKey];
+    if (!workout) return;
+
+    const exercise = workout.exercises.find(ex => ex.id === exerciseId);
+    if (!exercise) return;
+
+    const set = exercise.sets.find(s => s.id === setId);
+    if (!set) return;
+
+    set.completed = isCompleted;
+
+    const updatedWorkout = {
+      ...workout,
+      updatedAt: new Date(),
+    };
+
+    try {
+      await updateWorkoutInFirestore(updatedWorkout);
+    } catch (error) {
+      console.error('Error updating set completion:', error);
+    }
+  };
+  
+  const handleLogWorkout = async () => {
+    if (!user) return;
+    
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    const workout = workouts[dateKey];
+    if (!workout) return;
+
+    const updatedWorkout = {
+      ...workout,
+      completed: !workout.completed,
+      updatedAt: new Date(),
+    };
+
+    try {
+      await updateWorkoutInFirestore(updatedWorkout);
+    } catch (error) {
+      console.error('Error logging workout:', error);
+    }
+  };
+  
+  const handleCreateRoutine = async () => {
+    if (!user) return;
+    
+    const dateKey = format(selectedDate, 'yyyy-MM-dd');
+    const now = new Date();
+    
+    const newWorkout: Workout = {
+      id: crypto.randomUUID(),
+      userId: user.uid,
+      name: 'New Routine',
+      date: selectedDate,
+      completed: false,
+      createdAt: now,
+      updatedAt: now,
+      exercises: [],
+    };
+
+    try {
+      await updateWorkoutInFirestore(newWorkout);
+    } catch (error) {
+      console.error('Error creating routine:', error);
+    }
+  };
+
+  const handleMoveWorkout = async (newDate: Date) => {
+    if (!user) return;
+    
     const oldDateKey = format(selectedDate, 'yyyy-MM-dd');
-    const newDateKey = format(newDate, 'yyyy-MM-dd');
-    setWorkouts(prev => {
-      const newWorkouts = { ...prev };
-      if (newWorkouts[oldDateKey]) {
-        // Update the date property within the workout object
-        newWorkouts[oldDateKey].date = newDate;
-        newWorkouts[oldDateKey].updatedAt = new Date();
-        // Move the workout to the new date key
-        newWorkouts[newDateKey] = newWorkouts[oldDateKey];
-        // Delete the old entry
-        delete newWorkouts[oldDateKey];
-      }
-      return newWorkouts;
-    });
-    setSelectedDate(newDate);
+    const workout = workouts[oldDateKey];
+    if (!workout) return;
+
+    const updatedWorkout = {
+      ...workout,
+      date: newDate,
+      updatedAt: new Date(),
+    };
+
+    try {
+      await updateWorkoutInFirestore(updatedWorkout);
+      setSelectedDate(newDate);
+    } catch (error) {
+      console.error('Error moving workout:', error);
+    }
   };
 
   const selectedWorkout = useMemo(() => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     return workouts[dateKey];
   }, [selectedDate, workouts]);
+
+  const exerciseTemplates = useMemo(() => {
+    return getExerciseTemplates(workouts);
+  }, [workouts]);
 
   if (!isClient) {
     // You can return a loader here or null
@@ -219,6 +282,7 @@ export default function Home() {
               onLogWorkout={handleLogWorkout}
               onCreateRoutine={handleCreateRoutine}
               onMoveWorkout={handleMoveWorkout}
+              exerciseTemplates={exerciseTemplates}
             />
           </main>
         </div>

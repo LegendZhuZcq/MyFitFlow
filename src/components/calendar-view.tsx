@@ -41,6 +41,7 @@ const CalendarView = ({ selectedDate, onDateSelect, workouts, currentWeek, onWee
         <div className="flex items-center justify-center space-x-1 sm:space-x-2 md:space-x-3">
           {days.map(day => {
             const dateKey = format(day, 'yyyy-MM-dd');
+            const hasWorkout = !!workouts[dateKey];
             const hasCompletedWorkout = workouts[dateKey]?.completed;
             const isSelected = isSameDay(day, selectedDate);
             const isCurrentToday = isToday(day);
@@ -62,7 +63,7 @@ const CalendarView = ({ selectedDate, onDateSelect, workouts, currentWeek, onWee
                   )}
                 >
                   <span className="text-sm sm:text-base md:text-lg font-bold">{format(day, 'd')}</span>
-                   {hasCompletedWorkout && (
+                   {hasWorkout && (
                     <span className="absolute bottom-1 sm:bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 bg-accent rounded-full"></span>
                   )}
                 </Button>

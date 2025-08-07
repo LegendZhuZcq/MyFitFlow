@@ -116,9 +116,9 @@ const RoutineDesigner = ({
             <div className="flex space-x-2">
               <MoveWorkoutDialog
                 trigger={
-                  <Button variant="outline">
-                    <Move className="mr-10 h-4 w-4" />
-                    Move Workout
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Move className="mr-1 h-4 w-4" />
+                    <span className="hidden sm:inline">Move</span>
                   </Button>
                 }
                 currentWorkout={workout}
@@ -126,9 +126,9 @@ const RoutineDesigner = ({
               />
               <CopyWorkoutDialog
                 trigger={
-                  <Button variant="outline">
-                    <Copy className="mr-11 h-4 w-4" />
-                    Copy Workout
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Copy className="mr-1 h-4 w-4" />
+                    <span className="hidden sm:inline">Copy</span>
                   </Button>
                 }
                 currentWorkout={workout}

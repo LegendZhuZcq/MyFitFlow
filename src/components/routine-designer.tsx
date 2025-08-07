@@ -112,30 +112,34 @@ const RoutineDesigner = ({
           </p>
         </div>
         {workout && (
-          <div className="flex space-x-2">
-            <MoveWorkoutDialog
-              trigger={
-                <Button variant="outline">
-                  <Move className="mr-2 h-4 w-4" />
-                  Move Workout
-                </Button>
-              }
-              currentWorkout={workout}
-              onMoveWorkout={onMoveWorkout}
-            />
-            <CopyWorkoutDialog
-              trigger={
-                <Button variant="outline">
-                  <Copy className="mr-2 h-4 w-4" />
-                  Copy Workout
-                </Button>
-              }
-              currentWorkout={workout}
-              onCopyWorkout={onCopyWorkout}
-            />
-            <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"}>
-              {workout.completed ? 'Mark as Incomplete' : 'Mark as completed'}
-            </Button>
+          <div className="space-y-2">
+            <div className="flex space-x-2">
+              <MoveWorkoutDialog
+                trigger={
+                  <Button variant="outline">
+                    <Move className="mr-10 h-4 w-4" />
+                    Move Workout
+                  </Button>
+                }
+                currentWorkout={workout}
+                onMoveWorkout={onMoveWorkout}
+              />
+              <CopyWorkoutDialog
+                trigger={
+                  <Button variant="outline">
+                    <Copy className="mr-11 h-4 w-4" />
+                    Copy Workout
+                  </Button>
+                }
+                currentWorkout={workout}
+                onCopyWorkout={onCopyWorkout}
+              />
+            </div>
+            <div className="flex">
+              <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"} className="flex-1">
+                {workout.completed ? 'Mark as Incomplete' : 'Mark as completed'}
+              </Button>
+            </div>
           </div>
         )}
       </div>

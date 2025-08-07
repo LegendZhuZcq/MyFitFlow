@@ -183,8 +183,14 @@ export default function Home() {
 
     set.completed = isCompleted;
 
+    // Check if all sets in the workout are now completed
+    const allSetsCompleted = workout.exercises.every(ex => 
+      ex.sets.length > 0 && ex.sets.every(s => s.completed)
+    );
+
     const updatedWorkout = {
       ...workout,
+      completed: allSetsCompleted,
       updatedAt: new Date(),
     };
 
@@ -202,9 +208,21 @@ export default function Home() {
     const workout = workouts[dateKey];
     if (!workout) return;
 
+    const newCompletedState = !workout.completed;
+
+    // Update all sets to match the workout completion state
+    const updatedExercises = workout.exercises.map(exercise => ({
+      ...exercise,
+      sets: exercise.sets.map(set => ({
+        ...set,
+        completed: newCompletedState
+      }))
+    }));
+
     const updatedWorkout = {
       ...workout,
-      completed: !workout.completed,
+      completed: newCompletedState,
+      exercises: updatedExercises,
       updatedAt: new Date(),
     };
 

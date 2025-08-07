@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Dumbbell, Plus, Move, Edit2 } from 'lucide-react';
+import { Dumbbell, Plus, Move, Edit2, Copy } from 'lucide-react';
 import type { Exercise, Workout } from '@/types';
 import type { ExerciseTemplate } from '@/lib/exercise-templates';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import ExerciseCard from './exercise-card';
 import { AddExerciseDialog } from './add-exercise-dialog';
 import { MoveWorkoutDialog } from './move-workout-dialog';
+import { CopyWorkoutDialog } from './copy-workout-dialog';
 
 interface RoutineDesignerProps {
   workout: Workout | undefined;
@@ -22,6 +23,7 @@ interface RoutineDesignerProps {
   onLogWorkout: () => void;
   onCreateRoutine: () => void;
   onMoveWorkout: (newDate: Date) => void;
+  onCopyWorkout: (targetDate: Date) => void;
   onEditWorkoutName?: (newName: string) => void;
   exerciseTemplates?: ExerciseTemplate[];
 }
@@ -36,6 +38,7 @@ const RoutineDesigner = ({
   onLogWorkout,
   onCreateRoutine,
   onMoveWorkout,
+  onCopyWorkout,
   onEditWorkoutName,
   exerciseTemplates = [],
 }: RoutineDesignerProps) => {
@@ -119,6 +122,16 @@ const RoutineDesigner = ({
               }
               currentWorkout={workout}
               onMoveWorkout={onMoveWorkout}
+            />
+            <CopyWorkoutDialog
+              trigger={
+                <Button variant="outline">
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy Workout
+                </Button>
+              }
+              currentWorkout={workout}
+              onCopyWorkout={onCopyWorkout}
             />
             <Button onClick={onLogWorkout} variant={workout.completed ? "secondary" : "default"}>
               {workout.completed ? 'Mark as Incomplete' : 'Mark as completed'}
